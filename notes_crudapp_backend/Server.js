@@ -107,5 +107,20 @@ app.post('/api/home',async(req,res)=>{
     }
 
 })
+//fetch notes
+app.get('/fetchitems/:id',async(req,res)=>{
+    try{
+        const userId=new mongoose.Types.ObjectId(req.params.id)
+        const notes=await notesModel.find({
+            userId:userId
+        })
+        res.json(notes)
+
+    }
+    catch(error){
+        console.log("error in fetching items")
+
+    }
+})
 
 

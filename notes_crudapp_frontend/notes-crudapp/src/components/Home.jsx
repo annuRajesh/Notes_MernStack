@@ -11,7 +11,19 @@ const Home = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const {userId} = useParams();
-
+  const [items,setItems]=useState([])
+useEffect(()=>{
+  const fetchItems=async()=>{
+    try{
+      const response=await axios.get(`http://localhost:5000/fetchitems/${userId}`)
+      setItems(response.data)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+  fetchItems()
+})
   const handleSubmit = async (e) => {
     try {
       e.preventDefault()
@@ -22,7 +34,9 @@ const Home = () => {
       });
       if (response.status === 201) {
         
-        location.reload()
+       const updatedResponse=await axios.get(`http://localhost:5000/fetchitems/${userId}`)
+       setItems(updatedResponse.data)
+       handleClose()
       }
     } catch (error) {
       console.log("error:", error);
@@ -31,17 +45,16 @@ const Home = () => {
   return (
     <>
       <NavBar />
-      <div className="container flex flex-col md:grid md:grid-cols-4 gap-4 mx-auto m-2 mt-32">
-        <div className="outline rounded p-4 m-4">
+      <div className="container flex flex-col md:grid md:grid-cols-4 gap-4 mx-auto m-2 ">
+        {
+          items.map((item,index)=>
+            <div className="outline rounded p-4 m-4" key={index}>
           <div className="text-xl pb-2 ">
-            <h1>Title</h1>
+            <h1>{item.title}</h1>
           </div>
-          <div className="text-justify">
-            <p>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Placeat
-              omnis quam cumque aperiam eum fugit quae sed quo itaque autem.
-              Quos iste labore neque error quidem numquam? Obcaecati, assumenda
-              officia?
+          <div className="text-justify ">
+            <p className="note-content">
+             {item.content}
             </p>
           </div>
           <div className="flex flex-row-reverse">
@@ -53,45 +66,14 @@ const Home = () => {
             </div>
           </div>
         </div>
-        <div className="outline rounded p-2 m-4">
-          <div className="text-xl">
-            <h1>Title</h1>
-          </div>
-          <div className="">
-            <p>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Placeat
-              omnis quam cumque aperiam eum fugit quae sed quo itaque autem.
-              Quos iste labore neque error quidem numquam? Obcaecati, assumenda
-              officia?
-            </p>
-          </div>
-        </div>
-        <div className="outline rounded p-2 m-4">
-          <div className="text-xl">
-            <h1>Title</h1>
-          </div>
-          <div className=" ">
-            <p>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Placeat
-              omnis quam cumque aperiam eum fugit quae sed quo itaque autem.
-              Quos iste labore neque error quidem numquam? Obcaecati, assumenda
-              officia?
-            </p>
-          </div>
-        </div>
-        <div className="outline rounded p-2 m-4">
-          <div className="text-xl">
-            <h1>Title</h1>
-          </div>
-          <div className="">
-            <p>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Placeat
-              omnis quam cumque aperiam eum fugit quae sed quo itaque autem.
-              Quos iste labore neque error quidem numquam? Obcaecati, assumenda
-              officia?
-            </p>
-          </div>
-        </div>
+          
+          
+          )
+        }
+        
+       
+        
+        
       </div>
       <div className="flex flex-row-reverse md:pr-32 md:justify-start justify-center pb-4">
         <Modal
