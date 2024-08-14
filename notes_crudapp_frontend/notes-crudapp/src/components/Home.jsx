@@ -1,11 +1,33 @@
 import Modal from "react-modal";
 import NavBar from "./NavBar";
 import { MdModeEdit, MdDelete } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 const Home = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const {userId} = useParams();
+
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault()
+      const response = await axios.post(`http://localhost:5000/api/home`, {
+         userId,
+         title,
+         content
+      });
+      if (response.status === 201) {
+        
+        location.reload()
+      }
+    } catch (error) {
+      console.log("error:", error);
+    }
+  };
   return (
     <>
       <NavBar />
@@ -79,15 +101,33 @@ const Home = () => {
           className="flex flex-row gap-4 justify-center items-center min-w-lg w-full bg-RoyalBlue mx-10"
           overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
         >
-          <div className="bg-RoyalBlue flex gap-4 flex-col p-10 w-full">
-            <div className="">
-              <input type="text" placeholder="title" className="bg-RoyalBlue outline-none text-2xl border w-full p-1"/>
+          <form action="" onSubmit={handleSubmit}>
+            <div className="bg-RoyalBlue flex gap-4 flex-col p-10 w-full">
+              <div className="">
+                <input
+                  type="text"
+                  placeholder="title"
+                  value={title}
+                  onChange={(e)=>setTitle(e.target.value)}
+                  className="bg-RoyalBlue outline-none text-2xl border w-full p-1"
+                />
+              </div>
+              <div className="">
+                <textarea
+                  name=""
+                  id=""
+                  value={content}
+                  onChange={(e)=>setContent(e.target.value)}
+                  placeholder="content"
+                  className="bg-RoyalBlue outline-none  w-full border p-1"
+                  rows={10}
+                ></textarea>
+              </div>
+              <button className="bg-secondaryYellow text-black py-2 rounded-lg shadow-2xl border border-secondaryYellow">
+                Save
+              </button>
             </div>
-            <div className="">
-              <textarea name="" id="" placeholder="content" className="bg-RoyalBlue outline-none  w-full border p-1" rows={10}></textarea>
-            </div>
-            <button className="bg-secondaryYellow text-black py-2 rounded-lg shadow-2xl border border-secondaryYellow">Save</button>
-          </div>
+          </form>
         </Modal>
         <div
           className="bg-RoyalBlue w-16 h-16 flex flex-col justify-center text-center rounded-lg shadow-xl cursor-pointer"

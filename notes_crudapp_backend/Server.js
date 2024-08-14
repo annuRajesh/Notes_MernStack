@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import e from "express";
 const app = express();
 app.use(
   cors({
@@ -65,9 +66,46 @@ if(!loginUser){
     if (!isMatch) {
       return res.json({ message: "password incorrect" });
     }
-    return res.status(200).json({ message: "login successfully" });
+    console.log(loginUser)
+    return res.status(200).json({ message: "login successfully" ,userId:loginUser._id});
   } catch (error) {
     res.json({ message: "server error" });
     console.log("error: ", error);
   }
 });
+//schema for notes
+const NotesSchema= mongoose.Schema({
+    userId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"users",
+        required:true
+    },
+    title:{
+        type:String
+    },
+    content:{
+        type:String
+    },
+    date:{
+        type:Date,
+        default:Date.now
+    }
+})
+const notesModel=new mongoose.model("notes_list",NotesSchema)
+//add notes
+app.post('/api/home',async(req,res)=>{
+    try{
+       
+
+        const {userId,title,content}=req.body
+        const newNote=await notesModel({userId,title,content})
+        await newNote.save()
+        res.status(201).json({message:"note created successfully"})
+    }
+    catch(error){
+        console.log("error in creating note",error)
+    }
+
+})
+
+

@@ -47,7 +47,7 @@ const SignUp = () => {
       setError("");
       if (response.status === 201) {
         alert(response.data.message);
-        navigate("/login");
+        navigate("/");
       }
     } catch (error) {
       console.log("error happened:", error);
@@ -56,7 +56,7 @@ const SignUp = () => {
     }
   };
   const handleNavigation = () => {
-    navigate("/login");
+    navigate("/");
   };
   return (
     <>

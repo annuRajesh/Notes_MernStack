@@ -23,10 +23,11 @@ const Login=()=>{
             }
            const response=await axios.post("http://localhost:5000/api/login",{email,password})
            alert(response.data.message)
+           console.log(response.data.userId)
           if(response.status===200){
 
               setError("")
-              navigate("/")
+              navigate(`/home/${response.data.userId}`)
           }
         }
         catch(error){
