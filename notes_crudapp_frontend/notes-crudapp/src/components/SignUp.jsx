@@ -5,6 +5,7 @@ import validateEmail from "./Validate";
 import axios from "axios";
 
 
+
 const SignUp = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -50,6 +51,8 @@ const SignUp = () => {
       }
     } catch (error) {
       console.log("error happened:", error);
+     alert(error.response.data.message)
+     
     }
   };
   const handleNavigation = () => {
@@ -58,7 +61,7 @@ const SignUp = () => {
   return (
     <>
       <NavBar />
-      <div className="container flex flex-col justify-center text-center mx-auto my-10 border-2 p-3 max-w-screen-sm rounded-lg shadow-xl border-RoyalBlue">
+      <div className="container flex flex-col justify-center text-center  w-full my-10 border-2 p-3 max-w-screen-sm rounded-lg shadow-xl mx-auto border-RoyalBlue">
         <div className="text-2xl p-2">
           <h1>Registration</h1>
         </div>

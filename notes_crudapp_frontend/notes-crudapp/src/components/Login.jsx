@@ -2,26 +2,37 @@ import { useState } from "react"
 import NavBar from "./NavBar"
 import validateEmail from "./Validate"
 import { useNavigate } from "react-router-dom"
+import axios from "axios"
 
 const Login=()=>{
     const navigate=useNavigate()
     const [email,setEmail]=useState('')
     const[password,setPassword]=useState('')
     const[error,setError]=useState('')
-    const handleLogin=(e)=>{
-        e.preventDefault()
-        if(!validateEmail(email)){
-            setError("enter a valid email address")
-            return;
+    const handleLogin=async(e)=>{
+        try{
+
+            e.preventDefault()
+            if(!validateEmail(email)){
+                setError("enter a valid email address")
+                return;
+            }
+            if(password===""){
+                setError("enter password")
+                return;
+            }
+           const response=await axios.post("http://localhost:5000/api/login",{email,password})
+           alert(response.data.message)
+          if(response.status===200){
+
+              setError("")
+              navigate("/")
+          }
         }
-        if(password===""){
-            setError("enter password")
-            return;
+        catch(error){
+           
+            console.log("error in login:",error)
         }
-        else
-        setError("")
-        return;
-        
     }
    const  handleNavigation=()=>{
         navigate('/signup')
@@ -43,7 +54,7 @@ const Login=()=>{
                         </tr>
                         <tr>
                             <td>
-                                <input type="text" placeholder="password" className="bg-RoyalBlue px-4 py-2 outline-none " value={password} onChange={(e)=>setPassword(e.target.value)}/>
+                                <input type="password" placeholder="password" className="bg-RoyalBlue px-4 py-2 outline-none " value={password} onChange={(e)=>setPassword(e.target.value)}/>
                             </td>
                         </tr>
                         <tr>
