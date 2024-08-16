@@ -9,6 +9,7 @@ const Login=()=>{
     const [email,setEmail]=useState('')
     const[password,setPassword]=useState('')
     const[error,setError]=useState('')
+    localStorage.removeItem('username')
     const handleLogin=async(e)=>{
         try{
 
@@ -23,11 +24,14 @@ const Login=()=>{
             }
            const response=await axios.post("http://localhost:5000/api/login",{email,password})
            alert(response.data.message)
-           console.log(response.data.userId)
+           console.log("login successful:",response.data)
           if(response.status===200){
 
               setError("")
+              localStorage.setItem('username',response.data.username)
+              console.log(response.data.username)
               navigate(`/home/${response.data.userId}`)
+
           }
         }
         catch(error){

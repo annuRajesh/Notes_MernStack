@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import handleDelete from "./Delete";
+import handleEdit from "./EditModal";
 const Home = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -16,6 +17,8 @@ const Home = () => {
   const [editNote,setEditNote]=useState(false)
   const [editItems,seteditItems]=useState([])
   const [editModal,setEditModal]=useState(false)
+  const [editTitle,seteditTitle]=useState(editItems.title||'')
+  const [editContent,seteditContent]=useState(editItems.content||'')
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -53,20 +56,20 @@ const Home = () => {
     }
   };
   
-  const handleEdit=async(noteId)=>{
-    try{
-
-      const response=await axios.get(`http://localhost:5000/editFetch/${noteId}`)
-      seteditItems(response.data)
-      setEditModal(true)
-
-
-    }
-    catch(error){
-      console.log("error in fetching item:",error)
-    }
+ const handleEditSave=async(noteId)=>{
+  try{
+const response=await axios.put(`http://localhost:5000/editItems/${noteId}`,{title:editTitle,content:editContent})
+console.log(response.data.message)
+seteditItems([])
+seteditTitle('')
+seteditContent('')
 
   }
+  catch(error){
+    console.log("error in updating item")
+
+  }
+ }
   return (
     <>
       <NavBar />
@@ -82,7 +85,7 @@ const Home = () => {
             </div>
             <div className="flex flex-row-reverse">
               <div className="pl-3 pr-3 ">
-                <MdModeEdit className="scale-125" onClick={()=>handleEdit(item._id)}/>
+                <MdModeEdit className="scale-125" onClick={()=>handleEdit(item._id,seteditItems,setEditModal)}/>
               </div>
               <div className="">
                 <MdDelete className="scale-125 cursor-pointer" onClick={()=>handleDelete(item._id,setItems)}></MdDelete>
@@ -105,7 +108,7 @@ const Home = () => {
                 <input
                   type="text"
                   placeholder="title"
-                  value={title}
+                  value={editTitle}
                   onChange={(e) => setTitle(e.target.value)}
                   className="bg-RoyalBlue outline-none max-w- full text-2xl border w-full p-1"
                 />
@@ -114,7 +117,7 @@ const Home = () => {
                 <textarea
                   name=""
                   id=""
-                  value={content}
+                  value={editContent}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="content"
                   className="bg-RoyalBlue outline-none  w-full border p-1"
@@ -135,14 +138,14 @@ const Home = () => {
           overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
         >
         
-            <form action="">
+            <form action="" onSubmit={()=>handleEditSave(editItems._id)}>
             <div className="bg-RoyalBlue flex gap-4 flex-col   w-full ">
               <div className="">
                 <input
                   type="text"
                   placeholder="title"
                   value={editItems.title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  onChange={(e) => seteditTitle({...editItems,title:e.target.value})}
                   className="bg-RoyalBlue outline-none max-w- full text-2xl border w-full p-1"
                 />
               </div>
@@ -151,7 +154,7 @@ const Home = () => {
                   name=""
                   id=""
                   value={editItems.content}
-                  onChange={(e) => setContent(e.target.value)}
+                  onChange={(e) => seteditContent({...editItems,content:e.target.value})}
                   placeholder="content"
                   className="bg-RoyalBlue outline-none  w-full border p-1"
                   rows={10}

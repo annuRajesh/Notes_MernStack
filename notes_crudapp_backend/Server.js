@@ -69,7 +69,7 @@ app.post("/api/login", async (req, res) => {
     console.log(loginUser);
     return res
       .status(200)
-      .json({ message: "login successfully", userId: loginUser._id });
+      .json({ message: "login successfully", userId: loginUser._id,username:loginUser.username });
   } catch (error) {
     res.json({ message: "server error" });
     console.log("error: ", error);
@@ -147,5 +147,19 @@ app.get('/editFetch/:noteId',async(req,res)=>{
 catch(error){
   console.log("error in fetching",error)
 }
+})
+//update items
+app.put('/editItems/:noteId',async(req,res)=>{
+  try{
+    const noteId=new mongoose.Types.ObjectId(req.params.noteId)
+    const {title,content}=req.body
+    const Edited=await notesModel.findByIdAndUpdate(noteId,{title,content},{new:true})
+    if(Edited){
+      res.json({message:"edited successfully"})
+    }
+  }
+  catch(error){
+    console.log("error in editing item")
+  }
 })
 
