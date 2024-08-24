@@ -62,6 +62,8 @@ const Home = () => {
         ...doc.data()
        }))
        setItems(Array)
+       setContent('')
+       setTitle('')
 
       }
       
