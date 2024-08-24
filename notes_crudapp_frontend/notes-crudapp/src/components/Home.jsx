@@ -6,6 +6,8 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import handleDelete from "./Delete";
 import handleEdit from "./EditModal";
+import { db,auth} from "./Firebase";
+import { addDoc, collection,where,getDocs,query } from "firebase/firestore";
 const Home = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -23,10 +25,15 @@ const Home = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5000/fetchitems/${userId}`
-        );
-        setItems(response.data);
+       
+       const NotesRef=collection(db,'notes')
+       const q=query(NotesRef, where('userId','==',userId))
+       const querySnapshot=await getDocs(q)
+       const Array=querySnapshot.docs.map(doc=>({
+        id:doc.id,
+        ...doc.data()
+       }))
+       setItems(Array)
       } catch (error) {
         console.log(error);
       }
@@ -37,20 +44,28 @@ const Home = () => {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      const response = await axios.post(`http://localhost:5000/api/home`, {
-        userId,
-        title,
-        content,
-      });
-      if (response.status === 201) {
-        const updatedResponse = await axios.get(
-          `http://localhost:5000/fetchitems/${userId}`
-        );
-        setItems(updatedResponse.data);
-        setTitle('')
-        setContent('')
-        handleClose();
+      const user = auth.currentUser;
+      if(user && title && content){
+        await addDoc(collection(db,'notes'),{
+          title:title,
+          content:content,
+          userId:userId,
+          date:new Date().toISOString()
+        })
+        handleClose()
+
+         const NotesRef=collection(db,'notes')
+       const q=query(NotesRef, where('userId','==',userId))
+       const querySnapshot=await getDocs(q)
+       const Array=querySnapshot.docs.map(doc=>({
+        id:doc.id,
+        ...doc.data()
+       }))
+       setItems(Array)
+
       }
+      
+      
     } catch (error) {
       console.log("error:", error);
     }
@@ -85,10 +100,10 @@ seteditContent('')
             </div>
             <div className="flex flex-row-reverse">
               <div className="pl-3 pr-3 ">
-                <MdModeEdit className="scale-125" onClick={()=>handleEdit(item._id,seteditItems,setEditModal)}/>
+                <MdModeEdit className="scale-125" onClick={()=>handleEdit(item.id,seteditItems,setEditModal)}/>
               </div>
               <div className="">
-                <MdDelete className="scale-125 cursor-pointer" onClick={()=>handleDelete(item._id,setItems)}></MdDelete>
+                <MdDelete className="scale-125 cursor-pointer" onClick={()=>handleDelete(item.id,setItems)}></MdDelete>
               </div>
             </div>
           </div>
@@ -108,7 +123,7 @@ seteditContent('')
                 <input
                   type="text"
                   placeholder="title"
-                  value={editTitle}
+                  value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   className="bg-RoyalBlue outline-none max-w- full text-2xl border w-full p-1"
                 />
@@ -117,7 +132,7 @@ seteditContent('')
                 <textarea
                   name=""
                   id=""
-                  value={editContent}
+                  value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="content"
                   className="bg-RoyalBlue outline-none  w-full border p-1"

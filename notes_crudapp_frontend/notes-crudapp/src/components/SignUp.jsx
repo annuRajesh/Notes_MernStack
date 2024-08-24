@@ -3,8 +3,10 @@ import NavBar from "./NavBar";
 import { useState } from "react";
 import validateEmail from "./Validate";
 import axios from "axios";
+import {auth } from './Firebase'
+import { createUserWithEmailAndPassword,updateProfile} from "firebase/auth";
 
-
+localStorage.removeItem('username')
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -37,21 +39,16 @@ const SignUp = () => {
         return;
       }
 
-      const response = await axios.post(
-        "http://localhost:5000/api/createAccount",
-        { username:name, email:email,password: password }
-        
-      );
-     
-      console.log(response.data.message)
+     const userCredentials=await createUserWithEmailAndPassword(auth,email,password)
+     const user=userCredentials.user
+     await updateProfile(user, { displayName: name });
+     console.log("User display name:", user.displayName);
       setError("");
-      if (response.status === 201) {
-        alert(response.data.message);
-        navigate("/");
-      }
+      navigate('/')
     } catch (error) {
+      alert("registration successful")
       console.log("error happened:", error);
-     alert(error.response.data.message)
+     
      
     }
   };

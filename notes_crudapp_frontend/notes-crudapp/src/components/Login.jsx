@@ -2,7 +2,8 @@ import { useState } from "react"
 import NavBar from "./NavBar"
 import validateEmail from "./Validate"
 import { useNavigate } from "react-router-dom"
-import axios from "axios"
+import { auth } from "./Firebase"
+import { signInWithEmailAndPassword } from "firebase/auth"
 
 const Login=()=>{
     const navigate=useNavigate()
@@ -22,17 +23,11 @@ const Login=()=>{
                 setError("enter password")
                 return;
             }
-           const response=await axios.post("http://localhost:5000/api/login",{email,password})
-           alert(response.data.message)
-           console.log("login successful:",response.data)
-          if(response.status===200){
-
-              setError("")
-              localStorage.setItem('username',response.data.username)
-              console.log(response.data.username)
-              navigate(`/home/${response.data.userId}`)
-
-          }
+           const UserCredentials=await signInWithEmailAndPassword(auth,email,password)
+           const User=UserCredentials.user
+           localStorage.setItem('username',User.displayName)
+           console.log(User.displayName)
+           navigate(`/home/${User.uid}`)
         }
         catch(error){
            
