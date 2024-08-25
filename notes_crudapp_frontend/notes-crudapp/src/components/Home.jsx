@@ -7,7 +7,7 @@ import axios from "axios";
 import handleDelete from "./Delete";
 import handleEdit from "./EditModal";
 import { db,auth} from "./Firebase";
-import { addDoc, collection,where,getDocs,query } from "firebase/firestore";
+import { addDoc, collection,where,getDocs,query,doc, getDoc } from "firebase/firestore";
 const Home = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -73,17 +73,28 @@ const Home = () => {
     }
   };
   
- const handleEditSave=async(noteId)=>{
+ const handleEditSave=(noteId)=>{
   try{
-const response=await axios.put(`http://localhost:5000/editItems/${noteId}`,{title:editTitle,content:editContent})
-console.log(response.data.message)
-seteditItems([])
-seteditTitle('')
-seteditContent('')
+            
 
   }
   catch(error){
     console.log("error in updating item")
+
+  }
+ }
+ const handleEdit=async(noteId)=>{
+  try{
+    const noteRef=doc(db,'notes',noteId)
+    
+    setEditModal(true)
+    const noteSnapshot=await getDoc(noteRef)
+    const noteData=noteSnapshot.data()
+    seteditItems(noteData)
+    console.log(editItems)
+
+  }
+  catch(error){
 
   }
  }
@@ -102,7 +113,7 @@ seteditContent('')
             </div>
             <div className="flex flex-row-reverse">
               <div className="pl-3 pr-3 ">
-                <MdModeEdit className="scale-125" onClick={()=>handleEdit(item.id,seteditItems,setEditModal)}/>
+                <MdModeEdit className="scale-125" onClick={()=>handleEdit(item.id)}/>
               </div>
               <div className="">
                 <MdDelete className="scale-125 cursor-pointer" onClick={()=>handleDelete(item.id,setItems)}></MdDelete>
@@ -112,6 +123,7 @@ seteditContent('')
         ))}
       </div>
       <div className="flex flex-row-reverse md:pr-32 md:justify-start justify-center pb-4">
+   
         <Modal
           isOpen={open}
           onRequestClose={handleClose}
@@ -148,6 +160,7 @@ seteditContent('')
             </div>
           </form>
         </Modal>
+        
         <Modal
         isOpen={editModal}
         onRequestClose={editClose}
@@ -155,14 +168,14 @@ seteditContent('')
           overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
         >
         
-            <form action="" onSubmit={()=>handleEditSave(editItems._id)}>
+            <form action="" onSubmit={()=>handleEditSave(editItems.id)}>
             <div className="bg-RoyalBlue flex gap-4 flex-col   w-full ">
               <div className="">
                 <input
                   type="text"
                   placeholder="title"
                   value={editItems.title}
-                  onChange={(e) => seteditTitle({...editItems,title:e.target.value})}
+                  onChange={(e) => seteditTitle(e.target.value)}
                   className="bg-RoyalBlue outline-none max-w- full text-2xl border w-full p-1"
                 />
               </div>
@@ -171,7 +184,7 @@ seteditContent('')
                   name=""
                   id=""
                   value={editItems.content}
-                  onChange={(e) => seteditContent({...editItems,content:e.target.value})}
+                  onChange={(e) => seteditContent(e.target.value)}
                   placeholder="content"
                   className="bg-RoyalBlue outline-none  w-full border p-1"
                   rows={10}
