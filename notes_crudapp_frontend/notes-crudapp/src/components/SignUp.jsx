@@ -58,30 +58,24 @@ const SignUp = () => {
   return (
     <>
       <NavBar />
-      <div className="container flex flex-col justify-center text-center  w-full my-10  p-3 max-w-screen-sm rounded-lg shadow-xl mx-auto border-RoyalBlue">
+      <div className="container flex flex-col justify-center text-center max-w-96 aspect-square  md:w-full my-10  p-3 w-fit rounded-lg shadow-xl mx-auto border-RoyalBlue">
         <div className="text-2xl p-2">
           <h1>Registration</h1>
         </div>
         <form
           action=""
           onSubmit={handleSubmit}
-          className="flex flex-col justify-center"
+          className="flex flex-col justify-center gap-2 "
         >
-          <table>
-            <tbody>
-              <tr>
-                <td>
+         
                   <input
                     type="text"
                     placeholder="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="bg-RoyalBlue outline-none m-1 px-4 py-2"
+                    className="bg-RoyalBlue outline-none  px-4 py-2"
                   />
-                </td>
-              </tr>
-              <tr>
-                <td>
+              
                   <input
                     type="text"
                     placeholder="email"
@@ -89,21 +83,15 @@ const SignUp = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     className="bg-RoyalBlue px-4 py-2 outline-none"
                   />
-                </td>
-              </tr>
-              <tr>
-                <td>
+             
                   <input
                     type="password"
                     placeholder="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-RoyalBlue m-1 px-4 py-2 outline-none"
+                    className="bg-RoyalBlue  px-4 py-2 outline-none"
                   />
-                </td>
-              </tr>
-              <tr>
-                <td>
+             
                   <input
                     type="password"
                     placeholder="rewrite the password"
@@ -111,11 +99,8 @@ const SignUp = () => {
                     onChange={(e) => setRePassword(e.target.value)}
                     className="bg-RoyalBlue px-4 py-2 outline-none"
                   />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <button className="bg-secondaryYellow m-4 text-black px-24 py-2">
+              
+                  <button className="bg-secondaryYellow mt-5 text-black px-24 py-2">
                     Sign Up
                   </button>
                   {error && <p className="text-sm text-red-400">{error}</p>}
@@ -128,10 +113,7 @@ const SignUp = () => {
                       Login
                     </span>
                   </p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+             
         </form>
       </div>
     </>
