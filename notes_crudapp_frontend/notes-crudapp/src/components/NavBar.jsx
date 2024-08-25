@@ -1,15 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import GetInitials from "./GetInitials";
 import {motion} from 'framer-motion'
+import { useEffect } from "react";
+import { useState } from "react";
 
 const NavBar = () => {
  
+ const [name,setName]=useState('')
   const navigate=useNavigate()
-  const name=localStorage.getItem('username')
-  const initials=name?GetInitials(name):''
+  useEffect(() => {
+    // Fetch the username from localStorage when the component mounts
+    const storedName = localStorage.getItem('username');
+    if (storedName) {
+      setName(storedName);
+    }
+  }, []);
+
+  const initials=name?GetInitials(name):'user'
   const handleLogout=()=>{
-    localStorage.removeItem('username')
-    navigate('/')
+    localStorage.removeItem('username');
+    setName(''); // Clear the state
+    navigate('/');
   }
   return (
     <>

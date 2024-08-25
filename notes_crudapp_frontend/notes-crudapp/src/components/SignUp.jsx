@@ -58,7 +58,7 @@ const SignUp = () => {
   return (
     <>
       <NavBar />
-      <div className="container flex flex-col justify-center text-center  w-full my-10 border-2 p-3 max-w-screen-sm rounded-lg shadow-xl mx-auto border-RoyalBlue">
+      <div className="container flex flex-col justify-center text-center  w-full my-10  p-3 max-w-screen-sm rounded-lg shadow-xl mx-auto border-RoyalBlue">
         <div className="text-2xl p-2">
           <h1>Registration</h1>
         </div>

@@ -26,7 +26,7 @@ const Login=()=>{
            const UserCredentials=await signInWithEmailAndPassword(auth,email,password)
            const User=UserCredentials.user
            localStorage.setItem('username',User.displayName)
-           console.log(User.displayName)
+          
            navigate(`/home/${User.uid}`)
         }
         catch(error){
@@ -40,7 +40,7 @@ const Login=()=>{
     return(
         <>
         <NavBar/>
-        <div className="container mx-auto max-w-screen-sm flex flex-col text-center  justify-center my-20 shadow-2xl border-2 border-RoyalBlue p-4 rounded-md">
+        <div className="container mx-auto w-full flex flex-col text-center  justify-center my-20 shadow-2xl  border-RoyalBlue p-4 rounded-md">
             <div className="">
 
         <h1 className="text-2xl">LOGIN</h1>
