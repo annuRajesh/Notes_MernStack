@@ -1,4 +1,4 @@
-# React + Vite
+# Note CRUD Website
 
 A simple crud website developed for self learning purposes.
 
